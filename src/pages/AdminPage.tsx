@@ -11,7 +11,7 @@ const AdminPage = () => {
     };
 
     return (
-        <Box sx={{ p: 2}}>
+        <Box>
             <AppBar position="static">
                 <Toolbar variant="dense">
                     <Typography variant="h6" color="inherit" component="div">
@@ -23,7 +23,7 @@ const AdminPage = () => {
                 <Tab label="Company Management" />
                 <Tab label="Communication Method Management" />
             </Tabs>
-            <Box sx={{ mt: 3 }}>
+            <Box sx={{ mt: 3, p: 2 }}>
                 {selectedTab ===  0 && <CompanyManagements />}
                 {selectedTab === 1 && <CommunicationMethodManagement />}
             </Box>

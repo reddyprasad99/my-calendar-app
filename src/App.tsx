@@ -25,8 +25,8 @@ const HomePage = () => {
           Go to Admin Module
         </Button>
         <Button
-          variant="outlined"
-          color="secondary"
+          variant="contained"
+          color="primary"
           onClick={() => navigate("/user")}
           sx={{ padding: "10px 20px", fontSize: "1rem" }}
         >
