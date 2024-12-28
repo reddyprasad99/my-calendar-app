@@ -1,6 +1,8 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import React from "react";
 import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import AdminPage from './pages/AdminPage';
+import UserPage from "./pages/UserPage";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -36,13 +38,13 @@ const HomePage = () => {
 };
 
 const App = () => {
-  
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/admin"  />
-        <Route path="/user"  />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/user" element={<UserPage />} />
       </Routes>
     </Router>
   );
