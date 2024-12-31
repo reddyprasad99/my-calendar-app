@@ -1,28 +1,24 @@
 import { Box, Button, Checkbox, FormControlLabel, Paper, Tooltip, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { filterNotifications } from 'utils/date';
+import { useSelector } from "react-redux";
+import { filterGridCommunications } from 'utils/date';
 import CommunicationModal from "./CommunicationModal";
 
 function CommunicationTable() {
-
-  // Fetching companies and communications data from Redux store
   const companies = useSelector((state: any) => state.company.companies);
   const communications = useSelector((state: any) => state.communication.communications);
-  const dispatch = useDispatch(); // For dispatching actions
 
-  // Filter notifications (due or overdue communications)
-  const filteredNotifications = filterNotifications(companies, communications);
+  const filteredNotifications = filterGridCommunications(companies, communications);
 
-  const [selectedCompanies, setSelectedCompanies]: any = useState([]); // To track selected rows
+  const [selectedCompanies, setSelectedCompanies]: any = useState([]); 
   const [open, setOpen] = useState(false);
 
   const handleSelectCompany = (companyId: any) => {
     if (selectedCompanies.includes(companyId)) {
-      setSelectedCompanies(selectedCompanies.filter((id: any) => id !== companyId)); // Deselect company
+      setSelectedCompanies(selectedCompanies.filter((id: any) => id !== companyId)); 
     } else {
-      setSelectedCompanies([...selectedCompanies, companyId]); // Select company
+      setSelectedCompanies([...selectedCompanies, companyId]);
     }
   };
 
@@ -34,7 +30,6 @@ function CommunicationTable() {
       <Typography variant="h6" gutterBottom>
         Company Communication Dashboard
       </Typography>
-      {/* {JSON.stringify(companies)} */}
 
       {/* Table to display company communication data */}
       <Paper elevation={3} sx={{ padding: 2 }}>

@@ -16,24 +16,53 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCompany, deleteCompany } from "store/companyList";
+import { addCompany, deleteCompany, updateCompany } from "store/companyList";
 
 function CompanyManagement() {
   const dispatch = useDispatch();
   const companies = useSelector((state: any) => state.company.companies);
 
   const [open, setOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
     location: "",
-    linkedIn: "",
+    linkedinProfile: "",
     emails: "",
     phoneNumbers: "",
     comments: "",
-    periodicity: "",
+    communicationPeriodicity: "",
   });
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (company?: any) => {
+    if (company) {
+      setIsEditMode(true);
+      setSelectedCompany(company);
+      setFormData({
+        name: company.name,
+        location: company.location,
+        linkedinProfile: company.linkedinProfile,
+        emails: company.emails,
+        phoneNumbers: company.phoneNumbers,
+        comments: company.comments,
+        communicationPeriodicity: company.communicationPeriodicity,
+      });
+    } else {
+      setIsEditMode(false);
+      setFormData({
+        name: "",
+        location: "",
+        linkedinProfile: "",
+        emails: "",
+        phoneNumbers: "",
+        comments: "",
+        communicationPeriodicity: "",
+      });
+    }
+    setOpen(true);
+  };
+
   const handleClose = () => setOpen(false);
 
   const handleChange = (e: any) => {
@@ -42,16 +71,11 @@ function CompanyManagement() {
   };
 
   const handleSave = () => {
-    dispatch(addCompany({...formData as any, id: Date.now()}));
-    setFormData({
-      name: "",
-      location: "",
-      linkedIn: "",
-      emails: "",
-      phoneNumbers: "",
-      comments: "",
-      periodicity: "",
-    });
+    if (isEditMode) {
+      dispatch(updateCompany({ ...formData, id: selectedCompany.id } as any));
+    } else {
+      dispatch(addCompany({ ...formData, id: Date.now() } as any));
+    }
     handleClose();
   };
 
@@ -61,7 +85,7 @@ function CompanyManagement() {
 
   return (
     <Box>
-      <Button variant="contained" color="secondary" onClick={handleOpen}>
+      <Button variant="contained" color="secondary" onClick={() => handleOpen()}>
         Add New Company
       </Button>
 
@@ -86,6 +110,14 @@ function CompanyManagement() {
                 <TableCell>
                   <Button
                     variant="outlined"
+                    color="primary"
+                    onClick={() => handleOpen(company)}
+                    sx={{ mr: 2 }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outlined"
                     color="error"
                     onClick={() => handleDelete(company)}
                   >
@@ -99,7 +131,7 @@ function CompanyManagement() {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Company</DialogTitle>
+        <DialogTitle>{isEditMode ? "Edit Company" : "Add Company"}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -120,8 +152,8 @@ function CompanyManagement() {
           <TextField
             fullWidth
             label="LinkedIn Profile"
-            name="linkedIn"
-            value={formData.linkedIn}
+            name="linkedinProfile"
+            value={formData.linkedinProfile}
             onChange={handleChange}
             sx={{ mb: 2 }}
           />
@@ -143,17 +175,9 @@ function CompanyManagement() {
           />
           <TextField
             fullWidth
-            label="Comments"
-            name="comments"
-            value={formData.comments}
-            onChange={handleChange}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
             label="Communication Periodicity (e.g., 2 weeks)"
-            name="periodicity"
-            value={formData.periodicity}
+            name="communicationPeriodicity"
+            value={formData.communicationPeriodicity}
             onChange={handleChange}
             sx={{ mb: 2 }}
           />

@@ -11,6 +11,7 @@ const initialState = {
       phoneNumbers: ["+1 234 567 8901", "+1 234 567 8902"],
       comments: "",
       communicationPeriodicity: "2 weeks",
+      lastFiveCommunications: [{ type: "LinkedIn Post", date: "2024-12-01" }],
     },
     {
       id: 2,
@@ -21,6 +22,7 @@ const initialState = {
       phoneNumbers: ["+1 345 678 9012"],
       comments: "",
       communicationPeriodicity: "1 month",
+      lastFiveCommunications: [{ type: "Phone Call", date: "2024-11-15" }],
     },
     {
       id: 3,
@@ -29,6 +31,7 @@ const initialState = {
       linkedinProfile: "https://www.linkedin.com/company/healthtech-solutions",
       emails: ["contact@healthtechsolutions.com"],
       phoneNumbers: ["+1 456 789 0123"],
+      lastFiveCommunications: [{ type: "LinkedIn Post", date: "2024-11-30" }],
       comments: "",
       communicationPeriodicity: "3 weeks",
     },
@@ -40,7 +43,21 @@ const companySlice = createSlice({
   initialState,
   reducers: {
     addCompany: (state: any, action: any) => {
-      state.companies.push(action.payload);
+      state.companies.push({...action.payload, lastFiveCommunications: [], comments: ""});
+    },
+    updateCompany: (
+      state: any,
+      action: { payload: { companyId: any; updatedData: any } }
+    ) => {
+      const { companyId, updatedData } = action.payload;
+      const index = state.companies.findIndex((c: any) => c.id === companyId);
+      if (index !== -1) {
+        // Update the company data with the new updatedData object
+        state.companies[index] = {
+          ...state.companies[index],
+          ...updatedData,  // Spread the updated data to overwrite the old values
+        };
+      }
     },
     editCompany: (state: any, action: { payload: { companyId: any, type: string, date: string, comments: string } }) => {
       const { companyId, type, date, comments } = action.payload;
@@ -49,8 +66,10 @@ const companySlice = createSlice({
         // Update the company data
         state.companies[index] = {
           ...state.companies[index],
-          type,
-          date,
+          lastFiveCommunications: [
+            ...state.companies[index].lastFiveCommunications,
+            { type, date },
+          ],
           comments,
         };
       }
@@ -61,5 +80,5 @@ const companySlice = createSlice({
   },
 });
 
-export const { addCompany, editCompany, deleteCompany } = companySlice.actions;
+export const { addCompany, editCompany, deleteCompany, updateCompany } = companySlice.actions;
 export default companySlice.reducer;

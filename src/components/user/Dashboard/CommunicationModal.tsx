@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField } from '@mui/material';
 import React, { useState } from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { editCompany } from 'store/companyList';
 
 function CommunicationModal({ open, onClose, selectedCompanies }: any) {
@@ -8,10 +8,9 @@ function CommunicationModal({ open, onClose, selectedCompanies }: any) {
   const [date, setDate] = useState('');
   const [comments, setNotes] = useState('');
   const dispatch = useDispatch();
-
+  const communications = useSelector((state: any) => state.communication.communications);
 
   const handleSubmit = () => {
-    console.log(selectedCompanies, "reddy")
     selectedCompanies.forEach((companyId: any) => {
       dispatch(editCompany({ companyId, type, date, comments }));
     });
@@ -30,8 +29,11 @@ function CommunicationModal({ open, onClose, selectedCompanies }: any) {
           onChange={(e) => setType(e.target.value)}
           margin="normal"
         >
-          <MenuItem value="Email">Email</MenuItem>
-          <MenuItem value="Call">Call</MenuItem>
+           {communications && communications.map((communication: any) => (
+            <MenuItem key={communication.name} value={communication.name}>
+              {communication.name}
+            </MenuItem>
+          ))}
         </TextField>
         <TextField
           label="Date of Communication"

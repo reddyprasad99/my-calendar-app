@@ -2,11 +2,7 @@ import dayjs from "dayjs";
 
 export const calculateNextCommunicationDate = (lastCommunicationDate: any, periodicity: any) => {
   const [value, unit] = periodicity.split(" "); // E.g., "2 weeks" -> [2, "weeks"]
-  
-  // Convert the periodicity to plural for dayjs unit handling
-  const pluralUnit = unit === "week" ? "weeks" : unit === "month" ? "months" : unit;
-
-  return dayjs(lastCommunicationDate).add(parseInt(value), pluralUnit).format("YYYY-MM-DD");
+  return dayjs(lastCommunicationDate).add(parseInt(value), unit).format("YYYY-MM-DD");
 };
 
 export const filterNotifications = (companies: any, communications: any) => {
@@ -34,5 +30,26 @@ export const filterNotifications = (companies: any, communications: any) => {
       };
     });
   };
-  
+
+
+export const filterGridCommunications = (companies: any[], communications: any[]) => {
+  const today = dayjs().format("YYYY-MM-DD");
+
+  return companies.map((company: any) => {
+    const lastCommDate = company.lastFiveCommunications?.length ? company.lastFiveCommunications?.[company.lastFiveCommunications.length - 1].date  : dayjs().format("YYYY-MM-DD"); ;
+  const periodicity = company.communicationPeriodicity.split(" ");
+  const duration = parseInt(periodicity[0]);
+  const unit = periodicity[1];
+
+  const nextComm = dayjs(lastCommDate).add(duration, unit).format("YYYY-MM-DD");
+
+    return {
+      ...company,
+      nextScheduledCommunication: nextComm,
+      isOverdue: dayjs(nextComm).isBefore(today),
+      isToday: dayjs(nextComm).isSame(today),
+    };
+  });
+};
+
   
