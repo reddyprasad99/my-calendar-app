@@ -1,24 +1,27 @@
 import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Typography,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField
 } from "@mui/material";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addCompany, deleteCompany } from "store/companyList";
 
 function CompanyManagement() {
-  const [companies, setCompanies] = useState([]);
+  const dispatch = useDispatch();
+  const companies = useSelector((state: any) => state.company.companies);
+
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -39,7 +42,7 @@ function CompanyManagement() {
   };
 
   const handleSave = () => {
-    setCompanies((prev: any) => [...prev, { ...formData, id: Date.now() }] as any);
+    dispatch(addCompany({...formData as any, id: Date.now()}));
     setFormData({
       name: "",
       location: "",
@@ -52,17 +55,14 @@ function CompanyManagement() {
     handleClose();
   };
 
-  const handleDelete = (id: any) => {
-    setCompanies((prev) => prev.filter((company: any) => company.id !== id));
+  const handleDelete = (company: any) => {
+    dispatch(deleteCompany(company));
   };
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>
-        Company Management
-      </Typography>
-      <Button variant="contained" onClick={handleOpen}>
-        Add Company
+      <Button variant="contained" color="secondary" onClick={handleOpen}>
+        Add New Company
       </Button>
 
       <TableContainer component={Paper} sx={{ mt: 2 }}>
@@ -87,7 +87,7 @@ function CompanyManagement() {
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={() => handleDelete(company.id)}
+                    onClick={() => handleDelete(company)}
                   >
                     Delete
                   </Button>

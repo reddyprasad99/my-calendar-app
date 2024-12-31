@@ -1,33 +1,29 @@
 import {
-    Box,
-    Button,
-    Checkbox,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    FormControlLabel,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-
-const defaultMethods = [
-  { name: "LinkedIn Post", description: "Post on LinkedIn", sequence: 1, mandatory: true },
-  { name: "LinkedIn Message", description: "Send a message on LinkedIn", sequence: 2, mandatory: true },
-  { name: "Email", description: "Send an email", sequence: 3, mandatory: true },
-  { name: "Phone Call", description: "Call the company", sequence: 4, mandatory: false },
-  { name: "Other", description: "Other methods of communication", sequence: 5, mandatory: false },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCommunication, logCommunication } from "../../store/communicationList";
 
 function CommunicationMethodManagement() {
-  const [methods, setMethods] = useState(defaultMethods);
+  const dispatch = useDispatch();
+  const communication = useSelector((state: any) => state.communication.communications);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [newMethod, setNewMethod] = useState({
     name: "",
@@ -45,20 +41,19 @@ function CommunicationMethodManagement() {
   };
 
   const handleAddMethod = () => {
-    setMethods([...methods, { ...newMethod, sequence: Number(newMethod.sequence) }]);
+    dispatch(logCommunication(newMethod as any));
     setNewMethod({ name: "", description: "", sequence: "", mandatory: false });
     setOpenDialog(false);
   };
 
-  const handleDeleteMethod = (index: number) => {
-    const updatedMethods = methods.filter((_, i) => i !== index);
-    setMethods(updatedMethods);
+  const handleDeleteMethod = (method: any) => {
+    dispatch(deleteCommunication(method));
   };
 
   return (
-    <Box p={3}>
-      <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>
-        Add Communication Method
+    <Box >
+      <Button variant="contained" color="secondary" onClick={() => setOpenDialog(true)}>
+        Add New Communication Method
       </Button>
       <TableContainer component={Paper} sx={{ marginTop: 3 }}>
         <Table>
@@ -72,7 +67,7 @@ function CommunicationMethodManagement() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {methods.map((method, index) => (
+            {communication.map((method: any, index: number) => (
               <TableRow key={index}>
                 <TableCell>{method.name}</TableCell>
                 <TableCell>{method.description}</TableCell>
@@ -82,7 +77,7 @@ function CommunicationMethodManagement() {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => handleDeleteMethod(index)}
+                    onClick={() => handleDeleteMethod(method)}
                   >
                     Delete
                   </Button>

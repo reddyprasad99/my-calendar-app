@@ -1,13 +1,20 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField } from '@mui/material';
 import React, { useState } from 'react';
+import { useDispatch } from "react-redux";
+import { editCompany } from 'store/companyList';
 
-function CommunicationModal({ open, onClose }: any) {
+function CommunicationModal({ open, onClose, selectedCompanies }: any) {
   const [type, setType] = useState('');
   const [date, setDate] = useState('');
-  const [notes, setNotes] = useState('');
+  const [comments, setNotes] = useState('');
+  const dispatch = useDispatch();
+
 
   const handleSubmit = () => {
-    console.log({ type, date, notes });
+    console.log(selectedCompanies, "reddy")
+    selectedCompanies.forEach((companyId: any) => {
+      dispatch(editCompany({ companyId, type, date, comments }));
+    });
     onClose();
   };
 
@@ -36,9 +43,9 @@ function CommunicationModal({ open, onClose }: any) {
           InputLabelProps={{ shrink: true }}
         />
         <TextField
-          label="Notes"
+          label="comments"
           fullWidth
-          value={notes}
+          value={comments}
           onChange={(e) => setNotes(e.target.value)}
           margin="normal"
           multiline
