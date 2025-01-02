@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 export const calculateNextCommunicationDate = (lastCommunicationDate: any, periodicity: any) => {
-  const [value, unit] = periodicity.split(" "); // E.g., "2 weeks" -> [2, "weeks"]
+  const [value, unit] = periodicity.split(" ");
   return dayjs(lastCommunicationDate).add(parseInt(value), unit).format("YYYY-MM-DD");
 };
 

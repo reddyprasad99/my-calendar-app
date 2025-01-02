@@ -52,10 +52,9 @@ const companySlice = createSlice({
       const { companyId, updatedData } = action.payload;
       const index = state.companies.findIndex((c: any) => c.id === companyId);
       if (index !== -1) {
-        // Update the company data with the new updatedData object
         state.companies[index] = {
           ...state.companies[index],
-          ...updatedData,  // Spread the updated data to overwrite the old values
+          ...updatedData,
         };
       }
     },
